@@ -1,2 +1,25 @@
-# ChatGPT-for-Adversarial-Discovery-of-Gender-Biases-in-LLMs
-Used GPT3.5 as an adversarial agent for automated gender bias discovery in other LLM’s.
+<h1 align="center">
+   <b>ChatGPT for Automated Adversarial Discovery of Gender Biases in LLMs</b>
+</h1>
+
+<h2 align="center">
+   <b>Abstract</b>
+</h2>
+
+Manually curated datasets have been the driving force for exploring social biases such as those related to race, gender, and religion in Large Language Models. However, the use of manually curated datasets is limited to the exploration of known and anticipated biases. Therefore, we propose the use of ChatGPT as an adversary agent for generating comprehensive test data to evaluate social bias in other Large Language Models. Through this process, we automate the discovery of social biases and potentially reveal unanticipated biases in models not captured by manual datasets with predefined bias measures.
+
+## Introduction
+<p>
+  From chatbots to automated messages, Large Language Models (LLM) like OpenAI’s ChatGPT, Google’s BARD, Microsoft’s Copilot are increasingly becoming more integrated into everyday life during today’s AI revolution. With the celebration of these advancements in natural language processing, their absorbed social biases are sometimes ignored. However, these absorbed biases should not be ignored as they lead models to generate problematic responses regarding race, gender, or intersectional groups [1, 2]. To identify this bias, current evaluations of social biases in LLMs heavily depend on manually curated datasets [5]. These datasets are less comprehensive as they limit the scope of bias detection to known and anticipated biases [3, 4]. Furthermore constructing these datasets can be time expensive. In this project, we propose a method of constructing comprehensive datasets in a time efficient manner by using ChatGPT as an adversarial agent to generate test sentences in a guided manner using reinforcement learning. By using ChatGPT to generate test sentences, we aim to automate social bias discovery in large language models while discovering unanticipated stereotypes and biases undetected by traditional methods using manual datasets [6].
+</p>
+
+## Method and Evaluation
+<p>
+We begin our experiment by prompting ChatGPT 3.5 to generate a list of group terms based on certain social characteristics such as race, gender, and religion. In this experiment we focused on uncovering gender biases therefore we asked it to generate gender group terms. After generating these terms, we prompt ChatGPT 3.5 to generate anti-stereotype sentences for each word in our group. We use the phrase “anti-stereotype” when prompting to prevent ChatGPT from rejecting our request. Once we have these sentences, we prompt ChatGPT to replace social terms from our group with their opposite, therefore leading to the creation of stereotypes. This set up step was done using GPT 3.5 user interface. However, the exact prompts used can be found in the project code under the “baseline” section.
+
+We then generate a bias score using GPT2 by evaluating the difference in loss of each stereotyped and anti-stereotyped sentence couple. Lastly, we feed the top ten and bottom ten sentences alongside their bias scores into GPT 3.5 Turbo, and prompt it to generate sentence couples that are likely to obtain high scores based on the provided sentence. The exact prompt can be found in the project code under the “reinforcement loop” section. Then, we retrieved all unique words in each iteration that resulted in a higher average bias score with the hope of finding candidate attribute groups that GPT2 has a stereotype towards. Next, we calculate the cosine similarity to ensure that the model is generating unique sentences with each iteration. We repeat the reinforcement loop of evaluating and generating more sentences until we reach a stopping condition. For this phase of the project, we stopped after a given number of epochs. However, a future potential stopping condition is when the cosine similarity of new sentences and scored sentences is significantly high as then we are simply generating the same sentences in our loop. Alternatively, we can inject new sentences instead of stopping here to jump the model into a different space, however, this would require some prompt engineering. Another potential future stopping condition is when the sum of bias measurements begin to plateau after a certain number of iterations. You can see the experimental flow diagram below following some examples in diagram 1.
+
+We also used GPT 3.5 turbo to extract the prominent descriptor of the top ten and bottom ten newly generated sentences alongside the group terms after they have been scored by GPT 2. This step was added in an attempt to extract candidate attribute groups causing high bias. Furthermore, we incorporated a little bit of human in the loop evaluation, with the help of my
+mentor, to identify which highly biased attributes were potential new or relevant stereotypes. This evaluation was done by looking at sentences with high bias magnitudes and deciding whether this prominent descriptor was a new or relevant stereotype group or not. In some cases we directly looked at the anti-stereotype and stereotype sentences for high bias magnitude groups to evaluate its relevance.
+</p>
+
